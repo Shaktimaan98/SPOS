@@ -1,0 +1,47 @@
+import java.io.*;
+import java.util.*;
+
+public class PassTwo {
+    static Map<String, Integer> SYMTAB = new LinkedHashMap<>();
+    static List<String> INTERMEDIATE = new ArrayList<>();
+
+    public static void main(String[] args) throws Exception {
+        readSymbolTable();
+        readIntermediate();
+
+        System.out.println("\n--- PASS-II OUTPUT ---");
+        passTwo();
+    }
+
+    static void readSymbolTable() throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader("SYMTAB.txt"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(" ");
+            SYMTAB.put(parts[0], Integer.parseInt(parts[1]));
+        }
+        br.close();
+    }
+
+    static void readIntermediate() throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader("INTERMEDIATE.txt"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            INTERMEDIATE.add(line);
+        }
+        br.close();
+    }
+
+    static void passTwo() {
+        for (String line : INTERMEDIATE) {
+            if (line.contains("(IS")) {
+                for (String sym : SYMTAB.keySet()) {
+                    if (line.contains("(S," + sym + ")")) {
+                        line = line.replace("(S," + sym + ")", String.valueOf(SYMTAB.get(sym)));
+                    }
+                }
+                System.out.println(line);
+            }
+        }
+    }
+}
